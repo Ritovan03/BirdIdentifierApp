@@ -1,16 +1,11 @@
-# bird_sound_classifier
+# Bird Identifier App
 
-A new Flutter project.
+A Flutter application that can identify bird species from audio recordings and uploaded MP3 files. The app uses a machine learning model through a Flask backend to classify bird sounds.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+- Record bird sounds directly from the app
+- Upload existing MP3 files
+- Play/pause audio recordings
+- Classify bird species using ML model
+- Save classifications for later reference
+- View history of identified birds
