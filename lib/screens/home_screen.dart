@@ -124,26 +124,59 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://127.0.0.1:5000/predict'),
+        Uri.parse('http://192.168.240.184:5000/predict'),  // Make sure this IP matches your Flask server
       );
 
       request.files.add(
         await http.MultipartFile.fromPath('file', _selectedPath!),
       );
 
-      final response = await request.send();
-      final responseData = await response.stream.bytesToString();
-      final birdInfo = json.decode(responseData);
-
-      setState(() {
-        _birdInfo = birdInfo;
-        _isLoading = false;
+      // Add headers to handle CORS
+      request.headers.addAll({
+        'Accept': 'application/json',
       });
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print('Response status code: ${response.statusCode}');
+      print('Raw response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        try {
+          final Map<String, dynamic> birdInfo = json.decode(response.body);
+
+          // Verify that we received the expected data
+          if (birdInfo.containsKey('PRIMARY_COM_NAME') ||
+              birdInfo.containsKey('SCI_NAME')) {
+            setState(() {
+              _birdInfo = birdInfo;
+            });
+          } else {
+            throw Exception('Invalid response format');
+          }
+        } catch (e) {
+          print('JSON parsing error: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error parsing response: ${e.toString()}'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        throw HttpException('Server returned ${response.statusCode}');
+      }
     } catch (e) {
-      setState(() => _isLoading = false);
+      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error classifying bird: $e')),
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          duration: const Duration(seconds: 3),
+        ),
       );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
