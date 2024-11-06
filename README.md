@@ -2,7 +2,7 @@
 
 A Flutter application that can identify bird species from audio recordings and uploaded MP3 files. The app uses a machine learning model through a Flask backend to classify bird sounds.
 
-# Model Description
+## Model Description
 
 This project involves bird sound classification using audio features extracted from audio files. The audio files were downloaded from a link, and feature extraction was done using `librosa` and other libraries. The main focus was on extracting MFCC (Mel-frequency cepstral coefficients) and training a Decision Tree model for classification.
 
